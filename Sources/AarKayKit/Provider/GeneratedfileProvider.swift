@@ -79,11 +79,17 @@ extension GeneratedfileProvider {
             .getTemplatefile(for: template)
         return try templateUrls.map { templateFile in
             try Try {
+                var df = datafile
+                if let ext = templateFile.ext,
+                let dirs = context?["dirs"] as? [String: String],
+                    let extDir = dirs[ext] {
+                    df.setDirectory(extDir + "/" + df.directory)
+                }
                 let rendered = try templateService.renderTemplate(
                     name: templateFile.template, context: context
                 )
                 return self.generatedfile(
-                    datafile: datafile,
+                    datafile: df,
                     stringContents: rendered,
                     pathExtension: templateFile.ext
                 )

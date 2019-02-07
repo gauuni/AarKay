@@ -60,7 +60,8 @@ protocol DatafileService {
         directory: String,
         template: String,
         contents: String,
-        using serializer: InputSerializable
+        using serializer: InputSerializable,
+        globalContext: [String: Any]?
     ) throws -> [Result<Datafile, AnyError>]
 
     /// Process and modify Datafile object by applying to the given template and create new datafiles.

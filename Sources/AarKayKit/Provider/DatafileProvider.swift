@@ -29,7 +29,8 @@ struct DatafileProvider: DatafileService {
         directory: String,
         template: String,
         contents: String,
-        using serializer: InputSerializable
+        using serializer: InputSerializable,
+        globalContext: [String: Any]?
     ) throws -> [Result<Datafile, AnyError>] {
         let context = try serializer.context(contents: contents)
         if name.isCollection {
@@ -42,7 +43,8 @@ struct DatafileProvider: DatafileService {
                 plugin: plugin,
                 directory: directory,
                 contextArray: contextArray,
-                template: template
+                template: template,
+                globalContext: globalContext
             )
         } else {
             guard let context = context as? [String: Any] else {
@@ -54,7 +56,8 @@ struct DatafileProvider: DatafileService {
                 fileName: name,
                 directory: directory,
                 context: context,
-                template: template
+                template: template,
+                globalContext: globalContext
             )
             return [Result<Datafile, AnyError>.success(df)]
         }
@@ -79,7 +82,8 @@ extension DatafileProvider {
         fileName: String,
         directory: String,
         context: [String: Any],
-        template: String
+        template: String,
+        globalContext: [String: Any]?
     ) -> Datafile {
         let fileName = context.fileName() ?? fileName
         var dir = directory
@@ -92,7 +96,8 @@ extension DatafileProvider {
             context: context,
             override: context.override(),
             skip: context.skip(),
-            template: .name(template)
+            template: .name(template),
+            globalContext: globalContext
         )
     }
 
@@ -100,7 +105,8 @@ extension DatafileProvider {
         plugin: String,
         directory: String,
         contextArray: [[String: Any]],
-        template: String
+        template: String,
+        globalContext: [String: Any]?
     ) -> [Result<Datafile, AnyError>] {
         return contextArray.map { context -> Result<Datafile, AnyError> in
             Result<Datafile, AnyError> {
@@ -113,7 +119,8 @@ extension DatafileProvider {
                     fileName: fileName,
                     directory: directory,
                     context: context,
-                    template: template
+                    template: template,
+                    globalContext: globalContext
                 )
             }
         }

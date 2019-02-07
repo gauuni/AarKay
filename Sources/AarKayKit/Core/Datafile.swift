@@ -44,6 +44,9 @@ public struct Datafile {
 
     /// The template to use for the Datafile.
     public private(set) var template: Template
+    
+    /// The global context.
+    public private(set) var globalContext: [String: Any]
 
     /// Initializes a Datafile.
     ///
@@ -60,7 +63,8 @@ public struct Datafile {
         context: [String: Any],
         override: Bool,
         skip: Bool,
-        template: Template
+        template: Template,
+        globalContext: [String: Any]?
     ) {
         self.fileName = fileName.failIfEmpty()
         self.directory = directory
@@ -68,6 +72,7 @@ public struct Datafile {
         self.override = override
         self.skip = skip
         self.template = template
+        self.globalContext = globalContext ?? [:]
     }
 
     /// Decodes and Encodes the model and sets the context.

@@ -84,7 +84,8 @@ extension Plugin {
                 directory: directory,
                 template: template,
                 contents: contents,
-                using: templateClass.inputSerializer()
+                using: templateClass.inputSerializer(),
+                globalContext: globalContext
             )
 
             let templateDatafiles = datafiles
@@ -127,7 +128,8 @@ extension Plugin {
                 directory: directory,
                 template: template,
                 contents: contents,
-                using: YamlInputSerializer()
+                using: YamlInputSerializer(),
+                globalContext: globalContext
             )
 
             return aarkayService.generatedfileService.generatedfiles(
