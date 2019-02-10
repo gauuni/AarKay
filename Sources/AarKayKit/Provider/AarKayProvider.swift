@@ -72,9 +72,7 @@ extension AarKayProvider {
     private func plugableClass(
         plugin: String
     ) -> Plugable.Type? {
-        if let plugable = NSClassFromString("\(plugin).\(plugin)") as? Plugable.Type {
-            return plugable
-        } else if let plugable = NSClassFromString("aarkay_plugin_\(plugin.lowercased()).\(plugin)") as? Plugable.Type {
+        if let plugable = NSClassFromString("\(plugin).\(plugin)Plugin") as? Plugable.Type {
             return plugable
         } else {
             return nil

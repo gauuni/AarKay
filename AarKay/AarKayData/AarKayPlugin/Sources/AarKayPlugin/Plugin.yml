@@ -1,0 +1,3 @@
+name: AarKayPlugin
+properties:
+  - isPlugin|Bool!|false

@@ -110,7 +110,7 @@ public class AarKay {
     ) {
         let pluginName = pluginUrl.lastPathComponent
         do {
-            let plugin = try Plugin(
+            let plugin = try Pluginfile(
                 name: pluginName,
                 globalContext: globalContext?[pluginName.lowercased()] as? [String: Any],
                 globalTemplates: templateUrls
@@ -149,7 +149,7 @@ public class AarKay {
     }
 
     private func bootstrap(
-        plugin: Plugin,
+        plugin: Pluginfile,
         sourceUrl: URL,
         destinationUrl: URL
     ) {

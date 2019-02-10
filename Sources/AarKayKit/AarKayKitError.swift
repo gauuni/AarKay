@@ -28,6 +28,11 @@ public enum AarKayKitError: Error {
             type: String,
             context: [String: Any]
         )
+        case invalidPluginModel(
+            plugin: String,
+            type: String,
+            context: [String: Any]
+        )
         case missingFileName
     }
 
@@ -87,6 +92,8 @@ extension AarKayKitError.InvalidContentsReason: LocalizedError {
             return "Single datafile expects an object as an input."
         case .invalidModel(let fileName, let template, let type, let context):
             return "The data for fileName - (\(fileName)) and template (\(template)) could not be serailzied to type - (\(type))\nContext :- \(context)"
+        case .invalidPluginModel(let plugin, let type, let context):
+            return "The data for plugin - (\(plugin)) could not be serailzied to type - (\(type))\nContext :- \(context)"
         case .missingFileName:
             return "Failed to resolve filename."
         }

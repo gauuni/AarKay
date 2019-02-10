@@ -7,14 +7,15 @@
 
 import Foundation
 import Result
+import SharedKit
 
 /// Represents a Plugin.
-public struct Plugin {
+public struct Pluginfile {
     /// The name of the plugin.
     let name: String
 
     /// The global context shared with all Generatedfiles.
-    let globalContext: [String: Any]?
+    private(set) var globalContext: [String: Any]
 
     /// The location of global templates.
     let globalTemplates: [URL]?
@@ -43,7 +44,7 @@ public struct Plugin {
         fileManager: FileManager = FileManager.default
     ) throws {
         self.name = name
-        self.globalContext = globalContext
+        self.globalContext = globalContext ?? [:]
         self.globalTemplates = globalTemplates
         self.fileManager = fileManager
         self.aarkayService = AarKayProvider(
@@ -56,9 +57,46 @@ public struct Plugin {
             fileManager: fileManager
         )
     }
+    
+    /// Sets the global context.
+    ///
+    /// - Parameter context: The context.
+    public mutating func setContext(_ context: [String: Any]) {
+        self.globalContext = context
+    }
+
+    /// Decodes and Encodes the model and sets the global context.
+    ///
+    /// - Parameter type: The type of `Codable`.
+    /// - Returns: The decoded model.
+    /// - Throws: An `Error` if JSON Decoding or Encoding encouters any error.
+    public mutating func dencode<T: Codable>(type: T.Type) throws -> T {
+        let globalContext = self.globalContext
+        let (model, object): (T, Any) = try Try {
+            let model = try JSONCoder.decode(type: T.self, context: globalContext)
+            let object = try JSONCoder.encode(model)
+            return (model, object)
+        }.catch { error in
+            AarKayKitError.invalidContents(
+                AarKayKitError.InvalidContentsReason
+                    .invalidPluginModel(
+                        plugin: name,
+                        type: String(describing: T.self),
+                        context: globalContext
+                )
+            )
+        }
+        guard let obj = object as? [String: Any] else {
+            throw AarKayKitError.internalError(
+                "Failed to decode object from encoded data"
+            )
+        }
+        setContext(obj)
+        return model
+    }
 }
 
-extension Plugin {
+extension Pluginfile {
     /// Creates GeneratedFile results from one Datafile on a disk.
     ///
     /// - Parameters:

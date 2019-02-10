@@ -93,8 +93,7 @@ public struct Datafile {
     /// - Throws: An `Error` if JSON Decoding encouters any error.
     public func decode<T: Decodable>(type: T.Type) throws -> T {
         let model: T = try Try {
-            let decodedData = try JSONSerialization.data(withJSONObject: self.context)
-            return try JSONDecoder().decode(type, from: decodedData) as T
+            return try JSONCoder.decode(type: T.self, context: self.context)
         }.catch { error in
             AarKayKitError.invalidContents(
                 AarKayKitError.InvalidContentsReason
@@ -190,12 +189,8 @@ public struct Datafile {
     /// - Returns: The encoded model.
     /// - Throws: An `Error` if JSON encoding encounters any error.
     public mutating func encode<T: Encodable>(_ model: T) throws -> [String: Any] {
-        let object: Any? = try Try {
-            let encodedData = try JSONEncoder().encode(model)
-            return try JSONSerialization.jsonObject(
-                with: encodedData,
-                options: .allowFragments
-            )
+        let object = try Try {
+            return try JSONCoder.encode(model)
         }.catch { error in
             AarKayKitError.invalidContents(
                 AarKayKitError.InvalidContentsReason

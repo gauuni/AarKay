@@ -21,7 +21,6 @@ public class Template: NSObject, Templatable {
 
 public class TemplateModel: Codable {
     public var isTemplate: Bool!
-    public var isPlugin: Bool!
     public var name: String
     public var module: String!
     public var base: String?
@@ -63,7 +62,6 @@ public class TemplateModel: Codable {
 
     private enum CodingKeys: String, CodingKey {
         case isTemplate
-        case isPlugin
         case name
         case module
         case base
@@ -88,7 +86,6 @@ public class TemplateModel: Codable {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.isTemplate = try container.decodeIfPresent(Bool.self, forKey: .isTemplate) ?? true
-        self.isPlugin = try container.decodeIfPresent(Bool.self, forKey: .isPlugin) ?? true
         self.name = try container.decode(String.self, forKey: .name)
         self.module = try container.decodeIfPresent(String.self, forKey: .module) ?? self.name
         self.base = try container.decodeIfPresent(String.self, forKey: .base)
@@ -105,7 +102,6 @@ public class TemplateModel: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(isTemplate, forKey: .isTemplate)
-        try container.encode(isPlugin, forKey: .isPlugin)
         try container.encode(name, forKey: .name)
         try container.encode(module, forKey: .module)
         try container.encodeIfPresent(base, forKey: .base)
